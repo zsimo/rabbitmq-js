@@ -1,0 +1,17 @@
+# FOLDERS
+node_modules/
+.idea/
+.vscode/
+vendor/
+bin/
+web/public/js/
+logs/
+public/
+
+# FILES
+.env
+*.log
+*.sqlite
+npm-debug.*
+debug.*
+dump.*
