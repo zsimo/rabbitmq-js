@@ -18,7 +18,7 @@ var connect = require("../connect");
             durable: false
         });
 
-        var queueName = "simone_test_01";
+        var queueName = "simone_test_02";
 
         var queue = await channel.assertQueue(queueName, {
             durable: false
@@ -28,9 +28,14 @@ var connect = require("../connect");
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", queueName);
         await channel.consume(queue.q, function (message) {
-             console.log(" [x] Received %s", message.content.toString());
-         }, {
-            noAck: true
+            console.log(" [x] Received %s", message.content.toString());
+
+            setTimeout(function () {
+                console.log("ack done");
+                channel.ack(message);
+            }, 1000);
+        }, {
+            noAck: false
         });
 
 

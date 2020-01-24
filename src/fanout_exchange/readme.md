@@ -1,0 +1,1 @@
+any routing keys will be ignore in a fanout exchange

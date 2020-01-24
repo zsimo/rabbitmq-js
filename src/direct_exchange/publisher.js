@@ -3,7 +3,9 @@
 
 var connect = require("../connect");
 
+
 var message = process.argv[2] || "ciao";
+var routingKey = process.argv[3] || "*";
 
 /**
  * when the publisher post directly on queue, it post via the default exchange
@@ -15,14 +17,14 @@ var message = process.argv[2] || "ciao";
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        var exchangeName = "simone_fanout";
-        await channel.assertExchange(exchangeName, 'fanout', {
+        var exchangeName = "simone_direct";
+        await channel.assertExchange(exchangeName, 'direct', {
             durable: false
         });
 
-        // fanout exchange will ignore any routing key
-        var routingKey = "";
         channel.publish(exchangeName, routingKey, Buffer.from(message));
+
+        console.log(`published: routing key: '${routingKey}', message: '${message}'`);
 
         setTimeout(function () {
             connection.close();
