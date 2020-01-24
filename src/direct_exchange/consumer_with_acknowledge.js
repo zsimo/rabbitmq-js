@@ -30,7 +30,7 @@ var routingKey = process.argv[2] || "*";
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", queueName);
         await channel.consume(queueName, function (message) {
-            console.log(`[x] Received ${message.content.toString()} with routing key: '${routingKey}'`);
+            console.log(`[x] Received '${message.content.toString()}' with routing key '${routingKey}'`);
 
             setTimeout(function () {
                 console.log("ack done");
