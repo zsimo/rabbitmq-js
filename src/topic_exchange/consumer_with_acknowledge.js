@@ -15,8 +15,8 @@ var routingKey = process.argv[2] || "*";
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        var exchangeName = "simone_direct";
-        await channel.assertExchange(exchangeName, "direct", {
+        var exchangeName = "simone_topic";
+        await channel.assertExchange(exchangeName, 'topic', {
             durable: false
         });
 
@@ -30,8 +30,8 @@ var routingKey = process.argv[2] || "*";
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", queueName);
         await channel.consume(queueName, function (message) {
-            console.log(`[x] Received '${message.content.toString()}' with routing key '${routingKey}'`);due
-
+            console.log(`[x] Received '${message.content.toString()}' with routing key '${routingKey}'`);
+            
             setTimeout(function () {
                 console.log("ack done");
                 channel.ack(message);
