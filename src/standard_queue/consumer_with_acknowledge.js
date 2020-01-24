@@ -19,7 +19,8 @@ var connect = require("../connect");
             durable: false
         });
 
-        console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queueName);
+        console.log(" [*] Waiting for messages in %s (noAck: false). To exit press CTRL+C", queueName);
+
         await channel.consume(queueName, function (message) {
             console.log(" [x] Received %s", message.content.toString());
 

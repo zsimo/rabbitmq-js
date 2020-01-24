@@ -3,6 +3,8 @@
 
 var connect = require("../connect");
 
+var message = process.argv[2] || "ciao";
+
 /**
  * when the publisher post directly on queue, it post via the default exchange
  * (with the routing key equal to the queue name)
@@ -13,18 +15,18 @@ var connect = require("../connect");
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        var queueName = "simone_test_01";
-
-        await channel.assertQueue(queueName, {
+        var exchangeName = "simone_fanout";
+        await channel.assertExchange(exchangeName, 'fanout', {
             durable: false
         });
 
-        console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", queueName);
-        await channel.consume(queueName, function (message) {
-             console.log(" [x] Received %s", message.content.toString());
-         }, {
-            noAck: true
-        });
+        var routingKey = "";
+        channel.publish(exchangeName, routingKey, Buffer.from(message));
+
+        setTimeout(function () {
+            connection.close();
+            process.exit(0);
+        }, 500);
 
 
     } catch (error) {

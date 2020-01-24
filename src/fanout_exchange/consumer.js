@@ -13,14 +13,21 @@ var connect = require("../connect");
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        var queueName = "simone_test_01";
-
-        await channel.assertQueue(queueName, {
+        var exchangeName = "simone_fanout";
+        await channel.assertExchange("simone_fanout", "fanout", {
             durable: false
         });
 
+        var queueName = "simone_test_01";
+
+        var queue = await channel.assertQueue(queueName, {
+            durable: false
+        });
+
+        await channel.bindQueue(queue.q, exchangeName, '');
+
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", queueName);
-        await channel.consume(queueName, function (message) {
+        await channel.consume(queue.q, function (message) {
              console.log(" [x] Received %s", message.content.toString());
          }, {
             noAck: true
