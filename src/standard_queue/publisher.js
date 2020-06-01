@@ -4,36 +4,50 @@
 var connect = require("../connect");
 
 var message = process.argv[2] || "ciao";
+var counter = 0;
 
 /**
  * when the publisher post directly on queue, it post via the default exchange
  * (with the routing key equal to the queue name)
  */
-(async function () {
+//(async function () {
+    setInterval(async function () {
+        try {
+            var connection = await connect;
+            var channel = await connection.createChannel();
 
-    try {
-        var connection = await connect;
-        var channel = await connection.createChannel();
+            // var exchange = await channel.assertExchange("simone_direct", "direct");
 
-        // var exchange = await channel.assertExchange("simone_direct", "direct");
+            var queueName = "simone_test_01";
 
-        var queueName = "simone_test_01";
+            await channel.assertQueue(queueName, {
+                durable: false
+            });
 
-        await channel.assertQueue(queueName, {
-            durable: false
-        });
+            var info = await channel.checkQueue(queueName);
+            console.log("total", info);
 
-        await channel.sendToQueue(queueName, Buffer.from(message));
+            message = counter.toString();
 
-        setTimeout(function () {
-            connection.close();
-            process.exit(0);
-        }, 500);
+            var response = await channel.sendToQueue(queueName, Buffer.from(message));
 
+            if (response === true) {
+                console.log("add message", message);
+            }
 
-    } catch (error) {
+        } catch (error) {
 
-        console.log(error);
-    }
+            console.log(error);
+        }
 
-})();
+        counter ++;
+    }, 1000);
+
+//})();
+
+/** 
+setTimeout(function () {
+    connection.close();
+    process.exit(0);
+}, 500);
+*/

@@ -1,0 +1,3 @@
+mv stream/_test.txt stream/test.txt
+
+mv stream/test.txt stream/_test.txt

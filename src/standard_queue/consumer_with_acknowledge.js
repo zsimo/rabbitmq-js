@@ -23,11 +23,10 @@ var connect = require("../connect");
 
         await channel.consume(queueName, function (message) {
             console.log(" [x] Received %s", message.content.toString());
+            
+            console.log("ack done");
+            channel.ack(message);
 
-            setTimeout(function () {
-                console.log("ack done");
-                channel.ack(message);
-            }, 2000);
         }, {
             noAck: false
         });
