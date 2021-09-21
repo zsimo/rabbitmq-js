@@ -7,10 +7,12 @@ var connectionOptions = {
     protocol: 'amqp',
     hostname: config.AMQP_HOST,
     port: 5672,
-    vhost: '/',
+    vhost: 'v1',
     username: config.AMQP_USERNAME,
     password: config.AMQP_PASSWORD
 };
+
+
 
 
 /** 
