@@ -16,14 +16,21 @@ var okRoutingKey = process.argv[2] || common.ip + ".ok";
         var connection = await connect;
         var channel = await connection.createChannel();
 
+        // =====================================================================
+        // create exchange if it's not exists
+        // =====================================================================
         await channel.assertExchange(common.exchange_name, 'topic', {
             durable: false
         });
-
+        // =====================================================================
+        // create queue if it's not exists
+        // =====================================================================
         await channel.assertQueue(common.ok_process_queue, {
             durable: false
         });
-
+        // =====================================================================
+        // bind exchange to queue
+        // =====================================================================
         await channel.bindQueue(common.ok_process_queue, common.exchange_name, okRoutingKey);
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", common.ok_process_queue);

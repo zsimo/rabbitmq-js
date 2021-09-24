@@ -18,15 +18,33 @@ var counter = 0;
         var connection = await connect;
         var channel = await connection.createChannel();
 
+        // =====================================================================
+        // create exchange if it's not exists
+        // =====================================================================
         await channel.assertExchange(common.exchange_name, 'topic', {
             durable: false
         });
-
+        // =====================================================================
+        // create queue if it's not exists
+        // =====================================================================
         await channel.assertQueue(common.queue_name, {
             durable: false
         });
-
+        // =====================================================================
+        // bind exchange to queue
+        // =====================================================================
         await channel.bindQueue(common.queue_name, common.exchange_name, routingKey);
+
+        // =====================================================================
+        // create ok queue if it's not exists
+        // =====================================================================
+        await channel.assertQueue(common.ok_process_queue, {
+            durable: false
+        });
+        // =====================================================================
+        // bind exchange to ok queue
+        // =====================================================================
+        await channel.bindQueue(common.ok_process_queue, common.exchange_name, okRoutingKey);
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", common.queue_name);
         await channel.consume(common.queue_name, function (message) {

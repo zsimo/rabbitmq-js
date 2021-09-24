@@ -20,9 +20,22 @@ var message = process.argv[3] || "pwd";
         var connection = await connect;
         var channel = await connection.createChannel();
 
+        // =====================================================================
+        // create exchange if it's not exists
+        // =====================================================================
         await channel.assertExchange(common.exchange_name, 'topic', {
             durable: false
         });
+        // =====================================================================
+        // create queue if it's not exists
+        // =====================================================================
+        await channel.assertQueue(common.queue_name, {
+            durable: false
+        });
+        // =====================================================================
+        // bind exchange to queue
+        // =====================================================================
+        await channel.bindQueue(common.queue_name, common.exchange_name, routingKey);
 
         setInterval(function () {
             channel.publish(common.exchange_name, routingKey, Buffer.from(message));
