@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "amqplib": "^0.5.5",
+    "axios": "^0.21.4",
     "env-to-config": "^1.2.7"
   }
 }
