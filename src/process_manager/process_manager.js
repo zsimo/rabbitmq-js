@@ -50,6 +50,7 @@ var counter = 0;
         await channel.consume(common.queue_name, function (message) {
             console.log(`exec command#${counter++} '${message.content.toString()}' with routing key '${routingKey}'`);
 
+            console.log(message.properties)
             setTimeout(async function () {
 
                 var pidId = "1";

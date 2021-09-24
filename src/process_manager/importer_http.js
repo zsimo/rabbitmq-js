@@ -72,7 +72,10 @@ const AUTH = {
             url: `${config.RABBIT_SERVER_BASE_URL}/api/exchanges/${common.vhost}/${common.exchange_name}/publish`,
             auth: AUTH,
             data: {
-                "properties": {},
+                "properties": {
+                    "correlationId": counter +"",
+                    "replyTo": common.ok_process_queue
+                },
                 "routing_key": routingKey,
                 "payload": message,
                 "payload_encoding": "string"

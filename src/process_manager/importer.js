@@ -38,7 +38,10 @@ var message = process.argv[3] || "pwd";
         await channel.bindQueue(common.queue_name, common.exchange_name, routingKey);
 
         setInterval(function () {
-            channel.publish(common.exchange_name, routingKey, Buffer.from(message));
+            channel.publish(common.exchange_name, routingKey, Buffer.from(message), {
+                correlationId: counter +"",
+                replyTo: common.ok_process_queue
+            });
             console.log(`published#${counter++}: routing key: '${routingKey}', message: '${message}'`);
         }, 1000);
 
