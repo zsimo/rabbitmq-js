@@ -40,25 +40,32 @@ var completed_tasks = [];
             console.log(response);
             channel.ack(message);
 
-            if (response === "task05") {
-                process.exit(0);
-                return;
+            switch (response) {
+                case "task01":
+                    await channel.sendToQueue(common.queue_sync, Buffer.from("task02"));
+                    return;
+                case "task02":
+                    await channel.sendToQueue(common.queue_sync, Buffer.from("task03"));
+                    return;
+                case "task03":
+                    await channel.sendToQueue(common.queue_async, Buffer.from("task04"));
+                    await channel.sendToQueue(common.queue_async, Buffer.from("task05"));
+                    await channel.sendToQueue(common.queue_async, Buffer.from("task06"));
+                    return;
+                case "task07":
+                    console.log("complete")
+                    await channel.close();
+                    process.exit(0);
+                    return;
+                default:
+                    if (completed_tasks.indexOf("task04") !== -1 && completed_tasks.indexOf("task05") !== -1 && completed_tasks.indexOf("task06") !== -1) {
+                        await channel.sendToQueue(common.queue_sync, Buffer.from("task07"));
+                    }
+                    return;
             }
-
-
-            if (response === "task01") {
-                await channel.sendToQueue(common.queue_async, Buffer.from("task02"));
-                await channel.sendToQueue(common.queue_async, Buffer.from("task03"));
-                await channel.sendToQueue(common.queue_async, Buffer.from("task04"));
-            }
-            if (completed_tasks.indexOf("task02") !== -1 && completed_tasks.indexOf("task03") !== -1 && completed_tasks.indexOf("task04") !== -1) {
-                await channel.sendToQueue(common.queue_sync, Buffer.from("task05"));
-            }
-
 
         }, {
-            noAck: false,
-            // priority: 3
+            noAck: false
         });
 
 
