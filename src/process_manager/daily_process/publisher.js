@@ -34,13 +34,15 @@ var completed_tasks = [];
 
 
         await channel.consume(common.queue_response, async  function (message) {
-            var response = message.content.toString();
-            completed_tasks.push(response);
+            var response = JSON.parse(message.content.toString());
+            var taskName = response.task_name;
+            completed_tasks.push(taskName);
 
-            console.log(response);
+            console.log(response.message);
+
             channel.ack(message);
 
-            switch (response) {
+            switch (taskName) {
                 case "task01":
                     await channel.sendToQueue(common.queue_sync, Buffer.from("task02"));
                     return;

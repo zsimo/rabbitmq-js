@@ -28,8 +28,11 @@ var task = require("./task");
                 console.log(" [x] Received %s", response);
                 var result = await task(response);
                 console.log(result);
-                // channel.ack(message);
-                var response = await channel.sendToQueue(common.queue_response, Buffer.from(response));
+                var payload = {
+                    task_name: response,
+                    message: result
+                };
+                var response = await channel.sendToQueue(common.queue_response, Buffer.from(JSON.stringify(payload)));
                 console.log(response);
          }, {
             noAck: true,
