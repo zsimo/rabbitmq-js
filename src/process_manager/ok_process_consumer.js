@@ -3,7 +3,6 @@
 
 var connect = require("../connect");
 var common = require("./common");
-var counter = 0;
 var okRoutingKey = process.argv[2] || common.ip + ".ok";
 
 /**
@@ -35,7 +34,8 @@ var okRoutingKey = process.argv[2] || common.ip + ".ok";
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", common.ok_process_queue);
         await channel.consume(common.ok_process_queue, function (message) {
-            console.log(`successfully exec pidId#${counter++}: '${message.content.toString()}' with routing key '${okRoutingKey}'`);
+            var pidId = message.content.toString();
+            console.log(`successfully exec pidId#${pidId} with routing key '${okRoutingKey}'`);
         }, {
             noAck: true
         });

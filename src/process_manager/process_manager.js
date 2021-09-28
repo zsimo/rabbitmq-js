@@ -48,13 +48,17 @@ var counter = 0;
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", common.queue_name);
         await channel.consume(common.queue_name, function (message) {
-            console.log(`exec command#${counter++} '${message.content.toString()}' with routing key '${routingKey}'`);
 
-            console.log(message.properties)
+            var pidId = message.properties.correlationId || counter++;
+            var returnQueueName = message.properties.replyTo || common.ok_process_queue;
+
+            console.log(`exec command#${pidId} '${message.content.toString()}' with routing key '${routingKey}'`);
+
+
             setTimeout(async function () {
-
-                var pidId = "1";
-                await channel.publish(common.exchange_name, okRoutingKey, Buffer.from(pidId));
+                // await channel.publish(common.exchange_name, okRoutingKey, Buffer.from(pidId));
+                // send to specific queue, bypassing routing
+                await channel.sendToQueue(returnQueueName, Buffer.from(pidId));
                 channel.ack(message);
                 // channel.nack(message);
             }, 1000);
