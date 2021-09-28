@@ -14,10 +14,12 @@ var task = require("./task");
         var channel = await connection.createChannel();
 
         await channel.assertQueue(common.queue_async, {
-            durable: false
+            durable: false,
+            autoDelete: true
         });
         await channel.assertQueue(common.queue_response, {
-            durable: false
+            durable: false,
+            autoDelete: true
         });
 
         console.log(" [*] Waiting for messages in %s (noAck: true). To exit press CTRL+C", common.queue_async);

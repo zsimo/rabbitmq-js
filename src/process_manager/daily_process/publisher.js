@@ -11,27 +11,22 @@ var completed_tasks = [];
     try {
         var connection = await connect;
         var channel = await connection.createChannel();
-        // var exchange = await channel.assertExchange("simone_direct", "direct");
 
         await channel.assertQueue(common.queue_sync, {
-            durable: false
+            durable: false,
+            autoDelete: true
         });
         await channel.assertQueue(common.queue_async, {
-            durable: false
+            durable: false,
+            autoDelete: true
         });
         await channel.assertQueue(common.queue_response, {
-            durable: false
+            durable: false,
+            autoDelete: true
         });
 
-
-        // correlationId: counter +"",
-        //     replyTo: common.ok_process_queue
-        var message = "task01";
-        var response = await channel.sendToQueue(common.queue_sync, Buffer.from(message));
-        if (response === true) {
-            console.log("add message", message);
-        }
-
+        
+        await channel.sendToQueue(common.queue_sync, Buffer.from("task01"));
 
         await channel.consume(common.queue_response, async  function (message) {
             var response = JSON.parse(message.content.toString());
