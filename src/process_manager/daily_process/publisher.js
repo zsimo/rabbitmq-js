@@ -12,21 +12,19 @@ var completed_tasks = [];
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        await channel.assertQueue(common.queue_sync, {
-            durable: false,
-            autoDelete: true
-        });
-        await channel.assertQueue(common.queue_async, {
-            durable: false,
-            autoDelete: true
-        });
-        await channel.assertQueue(common.queue_response, {
-            durable: false,
-            autoDelete: true
-        });
+        await channel.assertQueue(common.queue_sync, common.queues_options);
+        await channel.assertQueue(common.queue_async, common.queues_options);
+        await channel.assertQueue(common.queue_response, common.queues_options);
 
-        
-        await channel.sendToQueue(common.queue_sync, Buffer.from("task01"));
+
+        var info = await channel.checkQueue((common.queue_sync));
+        console.log("queue status", info);
+
+        var task01 = "task01";
+        var sendToQueueResponse = await channel.sendToQueue(common.queue_sync, Buffer.from(task01));
+        if (sendToQueueResponse === true) {
+            console.log(`${task01} add to queue ${common.queue_sync}`);
+        }
 
         await channel.consume(common.queue_response, async  function (message) {
             var response = JSON.parse(message.content.toString());

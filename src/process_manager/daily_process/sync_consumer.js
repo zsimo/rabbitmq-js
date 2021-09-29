@@ -13,14 +13,8 @@ var task = require("./task");
         var connection = await connect;
         var channel = await connection.createChannel();
 
-        await channel.assertQueue(common.queue_sync, {
-            durable: false,
-            autoDelete: true
-        });
-        await channel.assertQueue(common.queue_response, {
-            durable: false,
-            autoDelete: true
-        });
+        await channel.assertQueue(common.queue_sync, common.queues_options);
+        await channel.assertQueue(common.queue_response, common.queues_options);
 
         await channel.prefetch(1);
 
